@@ -1,1 +1,1 @@
-from wrapper import Wrapper
+from SMSGlobalAPI.mac_generator import global_service_sms

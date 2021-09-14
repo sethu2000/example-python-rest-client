@@ -1,18 +1,20 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
 import SMSGlobalAPI
-import json
+import logging
+import sys
 
-# Get the options
-parser = OptionParser()
-parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False, help="Enable extra detail for debugging")
-parser.add_option("-s", "--ssl", dest="ssl", action="store_true", default=False, help="Stored using SSL")
-(options, args) = parser.parse_args()
 
-# Do it, get the balance
+# Action : sends sms through Global service
+# Parameter : recipient, message
+def send_sms(recipient, message):
+    
+    response = SMSGlobalAPI.global_service_sms(recipient, message)
+    if response.ok:
+        logging.info("msg sent sucessfully to "+recipient+ " and the message sent is "+message )
+    else:
+        logging.error(response,exc_info=True)
+        logging.error("msg sent unsucessfully to "+recipient+ " and the message sent is "+message,exc_info=True)
 
-apiWrapper = SMSGlobalAPI.Wrapper(args[0], args[1], "http", "api.smsglobal.com", 80, "v1", "", options.verbose, SMSGlobalAPI.Wrapper.TYPE_JSON)
-groups = json.loads(apiWrapper.get("group"))
-print json.dumps(groups, sort_keys=True, indent=4, separators=(',', ': '))
-
+if __name__ == '__main__':
+    send_sms(sys.argv[1] ,sys.argv[2])
